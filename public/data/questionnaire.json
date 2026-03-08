@@ -1,0 +1,94 @@
+{
+  "questions": [
+    {
+      "id": 1,
+      "category": "commute",
+      "question": "What's your typical daily commute distance?",
+      "type": "single",
+      "options": [
+        { "id": "commute_short", "label": "0-30 km", "weight": { "range": 0.6, "affordability": 0.8 } },
+        { "id": "commute_medium", "label": "30-80 km", "weight": { "range": 0.8, "affordability": 0.5 } },
+        { "id": "commute_long", "label": "80+ km", "weight": { "range": 1.0, "affordability": 0.3 } }
+      ]
+    },
+    {
+      "id": 2,
+      "category": "driving",
+      "question": "How do you drive primarily?",
+      "type": "single",
+      "options": [
+        { "id": "drive_city", "label": "City streets and urban areas", "weight": { "maneuverability": 1.0, "efficiency": 0.9 } },
+        { "id": "drive_highway", "label": "Highway and long roads", "weight": { "range": 1.0, "comfort": 0.8 } },
+        { "id": "drive_mixed", "label": "Mix of both", "weight": { "balance": 1.0 } }
+      ]
+    },
+    {
+      "id": 3,
+      "category": "charging",
+      "question": "Where do you charge primarily?",
+      "type": "single",
+      "options": [
+        { "id": "charge_home", "label": "Home garage or driveway", "weight": { "convenience": 1.0, "affordability": 0.7 } },
+        { "id": "charge_public", "label": "Public charging stations", "weight": { "flexibility": 1.0, "affordability": 0.5 } },
+        { "id": "charge_work", "label": "Work or workplace parking", "weight": { "convenience": 0.8 } },
+        { "id": "charge_mixed", "label": "Mix of all options", "weight": { "flexibility": 1.0 } }
+      ]
+    },
+    {
+      "id": 4,
+      "category": "lifestyle",
+      "question": "Typical weekend trip distance?",
+      "type": "single",
+      "options": [
+        { "id": "weekend_short", "label": "Nearby (0-50 km)", "weight": { "affordability": 1.0 } },
+        { "id": "weekend_medium", "label": "Regular trips (50-200 km)", "weight": { "range": 0.9 } },
+        { "id": "weekend_long", "label": "Frequent long drives (200+ km)", "weight": { "range": 1.0, "comfort": 1.0 } }
+      ]
+    },
+    {
+      "id": 5,
+      "category": "climate",
+      "question": "What's your climate like?",
+      "type": "single",
+      "options": [
+        { "id": "climate_cold", "label": "Cold winters", "weight": { "heating": 1.0, "range": 0.8 } },
+        { "id": "climate_hot", "label": "Hot summers", "weight": { "cooling": 1.0, "efficiency": 0.8 } },
+        { "id": "climate_temperate", "label": "Moderate/temperate", "weight": { "balance": 1.0 } }
+      ]
+    },
+    {
+      "id": 6,
+      "category": "family",
+      "question": "Family size and seating needs?",
+      "type": "single",
+      "options": [
+        { "id": "family_single", "label": "Solo or couples (1-2 people)", "weight": { "affordability": 1.0, "maneuverability": 0.9 } },
+        { "id": "family_small", "label": "Small family (3-5 people)", "weight": { "balance": 1.0 } },
+        { "id": "family_large", "label": "Large family (6+ people)", "weight": { "seating": 1.0, "space": 1.0 } }
+      ]
+    },
+    {
+      "id": 7,
+      "category": "budget",
+      "question": "Budget sensitivity?",
+      "type": "single",
+      "options": [
+        { "id": "budget_high", "label": "Budget is flexible", "weight": { "performance": 1.0, "features": 1.0 } },
+        { "id": "budget_medium", "label": "Moderate budget", "weight": { "balance": 1.0 } },
+        { "id": "budget_low", "label": "Looking for best value", "weight": { "affordability": 1.0 } }
+      ]
+    },
+    {
+      "id": 8,
+      "category": "preference",
+      "question": "What matters most to you?",
+      "type": "single",
+      "options": [
+        { "id": "priority_efficiency", "label": "Efficiency and low running costs", "weight": { "efficiency": 1.0, "affordability": 0.9 } },
+        { "id": "priority_performance", "label": "Performance and acceleration", "weight": { "performance": 1.0 } },
+        { "id": "priority_comfort", "label": "Comfort and luxury", "weight": { "comfort": 1.0, "features": 1.0 } },
+        { "id": "priority_practicality", "label": "Practicality and flexibility", "weight": { "balance": 1.0, "space": 1.0 } }
+      ]
+    }
+  ]
+}
