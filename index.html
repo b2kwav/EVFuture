@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ElectriCore — Find Your EV</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #060a10;
+      --surface: #0d1420;
+      --surface2: #111b2a;
+      --border: rgba(0,180,255,0.12);
+      --blue: #00b4ff;
+      --blue-dim: rgba(0,180,255,0.15);
+      --gold: #f5c518;
+      --green: #00e5a0;
+      --text: #e8f0f8;
+      --muted: #5a7090;
+      --font-head: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 15px;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 2px; }
+
+    /* ─── UTILITIES ─── */
+    .hidden { display: none !important; }
+    .page { min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2.5rem; height: 64px;
+      background: rgba(6,10,16,0.85);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: var(--font-head); font-size: 1.15rem; font-weight: 800;
+      letter-spacing: 0.04em; color: var(--text);
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .nav-logo span { color: var(--blue); }
+    .nav-cta {
+      font-family: var(--font-head); font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--blue); border: 1px solid var(--blue);
+      padding: 0.45rem 1.1rem; border-radius: 4px;
+      background: none; cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-cta:hover { background: var(--blue); color: #000; }
+
+    /* ─── HERO ─── */
+    #page-home {
+      position: relative;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 8rem 2rem 4rem;
+      overflow: hidden;
+    }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,180,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,180,255,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse at 50% 40%, black 30%, transparent 80%);
+    }
+    .hero-glow {
+      position: absolute; width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(0,180,255,0.12) 0%, transparent 70%);
+      top: 50%; left: 50%; transform: translate(-50%, -60%);
+      pointer-events: none;
+    }
+    .hero-content { position: relative; max-width: 780px; }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.72rem; font-weight: 500; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--blue);
+      border: 1px solid rgba(0,180,255,0.3);
+      padding: 0.35rem 0.9rem; border-radius: 100px;
+      margin-bottom: 2rem;
+      background: rgba(0,180,255,0.06);
+    }
+    .hero-tag::before {
+      content: ''; width: 6px; height: 6px;
+      background: var(--blue); border-radius: 50%;
+      box-shadow: 0 0 8px var(--blue);
+    }
+    h1 {
+      font-family: var(--font-head); font-size: clamp(2.6rem, 6vw, 4.5rem);
+      font-weight: 800; line-height: 1.05; margin-bottom: 1.4rem;
+      letter-spacing: -0.02em;
+    }
+    h1 em { color: var(--blue); font-style: normal; }
+    .hero-sub {
+      font-size: 1.05rem; color: #7a9ab8; line-height: 1.7;
+      max-width: 560px; margin: 0 auto 2.5rem;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      font-family: var(--font-head); font-size: 0.85rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      background: var(--blue); color: #000;
+      padding: 0.85rem 2.2rem; border-radius: 6px;
+      border: none; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 30px rgba(0,180,255,0.3);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 45px rgba(0,180,255,0.5); }
+    .btn-primary svg { width: 16px; height: 16px; }
+
+    .hero-stats {
+      display: flex; justify-content: center; gap: 3rem;
+      margin-top: 4rem; padding-top: 3rem;
+      border-top: 1px solid var(--border);
+    }
+    .stat-item { text-align: center; }
+    .stat-num {
+      font-family: var(--font-head); font-size: 1.8rem; font-weight: 800;
+      color: var(--blue);
+    }
+    .stat-label { font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; letter-spacing: 0.06em; text-transform: uppercase; }
+
+    .feature-cards {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem; max-width: 900px; margin: 3rem auto 0;
+    }
+    .feature-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.4rem; text-align: left;
+    }
+    .feature-icon {
+      width: 36px; height: 36px; background: var(--blue-dim);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      margin-bottom: 0.8rem; font-size: 1.1rem;
+    }
+    .feature-title { font-family: var(--font-head); font-size: 0.85rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .feature-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+
+    /* ─── JOURNEY / QUESTIONNAIRE ─── */
+    #page-journey {
+      padding: 5rem 2rem 3rem;
+      align-items: center; justify-content: flex-start;
+    }
+    .journey-inner { width: 100%; max-width: 900px; margin: 0 auto; }
+
+    .progress-track {
+      display: flex; align-items: center; gap: 0.4rem; margin-bottom: 2.5rem;
+    }
+    .prog-step {
+      flex: 1; height: 3px; background: var(--surface2);
+      border-radius: 2px; overflow: hidden;
+      transition: background 0.4s;
+    }
+    .prog-step.done { background: var(--blue); }
+    .prog-step.active { background: linear-gradient(90deg, var(--blue), rgba(0,180,255,0.4)); }
+
+    .journey-header { margin-bottom: 2rem; }
+    .step-label {
+      font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--blue); margin-bottom: 0.6rem; font-weight: 600;
+    }
+    .question-text {
+      font-family: var(--font-head); font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 700; line-height: 1.2;
+    }
+
+    .options-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem; margin-bottom: 2rem;
+    }
+    .option-btn {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.2rem 1.4rem;
+      cursor: pointer; text-align: left;
+      transition: border-color 0.2s, background 0.2s, transform 0.15s;
+      color: var(--text);
+    }
+    .option-btn:hover { border-color: var(--blue); background: var(--blue-dim); transform: translateY(-2px); }
+    .option-btn.selected { border-color: var(--blue); background: rgba(0,180,255,0.18); box-shadow: 0 0 20px rgba(0,180,255,0.2); }
+    .option-icon { font-size: 1.5rem; margin-bottom: 0.6rem; }
+    .option-label { font-family: var(--font-head); font-size: 0.9rem; font-weight: 600; }
+    .option-desc { font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem; line-height: 1.4; }
+
+    .journey-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 1rem;
+    }
+    .btn-ghost {
+      font-family: var(--font-head); font-size: 0.8rem; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      background: none; border: 1px solid var(--border);
+      color: var(--muted); padding: 0.65rem 1.4rem; border-radius: 6px;
+      cursor: pointer; transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--blue); color: var(--blue); }
+    .btn-next {
+      font-family: var(--font-head); font-size: 0.8rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      background: var(--blue); color: #000;
+      padding: 0.65rem 1.8rem; border-radius: 6px; border: none;
+      cursor: pointer; transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn-next:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-next:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+    /* AI PANEL */
+    .ai-panel {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.4rem; margin-top: 1.5rem;
+      display: flex; gap: 1rem; align-items: flex-start;
+      animation: slideDown 0.3s ease;
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .ai-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), #0060ff);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; flex-shrink: 0;
+      box-shadow: 0 0 14px rgba(0,180,255,0.4);
+    }
+    .ai-name { font-family: var(--font-head); font-size: 0.72rem; font-weight: 700; color: var(--blue); margin-bottom: 0.3rem; letter-spacing: 0.1em; text-transform: uppercase; }
+    .ai-message { font-size: 0.85rem; color: #a0c0d8; line-height: 1.6; }
+
+    /* PROFILE METER */
+    .profile-meters {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.8rem; margin-top: 1.5rem;
+    }
+    .meter-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 0.9rem 1rem;
+    }
+    .meter-label { font-size: 0.72rem; color: var(--muted); margin-bottom: 0.5rem; letter-spacing: 0.06em; text-transform: uppercase; }
+    .meter-bar { height: 4px; background: var(--surface2); border-radius: 2px; overflow: hidden; }
+    .meter-fill { height: 100%; border-radius: 2px; transition: width 0.6s ease; }
+    .meter-fill.range { background: var(--blue); }
+    .meter-fill.comfort { background: var(--green); }
+    .meter-fill.performance { background: #ff6b35; }
+    .meter-fill.affordability { background: var(--gold); }
+    .meter-value { font-family: var(--font-head); font-size: 0.78rem; font-weight: 700; margin-top: 0.3rem; }
+
+    /* ─── PROFILE PAGE ─── */
+    #page-profile {
+      padding: 5rem 2rem 4rem;
+      align-items: center;
+    }
+    .profile-inner { max-width: 1100px; width: 100%; margin: 0 auto; }
+
+    .profile-hero {
+      background: linear-gradient(135deg, var(--surface) 0%, rgba(0,180,255,0.06) 100%);
+      border: 1px solid var(--border); border-radius: 16px;
+      padding: 2.5rem; margin-bottom: 2.5rem;
+      display: flex; align-items: center; gap: 2rem;
+      position: relative; overflow: hidden;
+    }
+    .profile-hero::before {
+      content: '';
+      position: absolute; right: -40px; top: -40px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(0,180,255,0.12) 0%, transparent 70%);
+    }
+    .profile-badge {
+      width: 72px; height: 72px; border-radius: 16px;
+      background: linear-gradient(135deg, var(--blue), #0050cc);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; flex-shrink: 0;
+      box-shadow: 0 0 30px rgba(0,180,255,0.3);
+    }
+    .profile-title { font-family: var(--font-head); font-size: 0.72rem; font-weight: 700; color: var(--blue); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 0.4rem; }
+    .profile-name { font-family: var(--font-head); font-size: 1.6rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .profile-desc { font-size: 0.9rem; color: #7a9ab8; line-height: 1.6; }
+
+    .profile-traits {
+      display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem;
+    }
+    .trait-tag {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em;
+      padding: 0.3rem 0.8rem; border-radius: 100px;
+      background: rgba(0,180,255,0.1); border: 1px solid rgba(0,180,255,0.25);
+      color: var(--blue);
+    }
+
+    .section-title {
+      font-family: var(--font-head); font-size: 1.3rem; font-weight: 800;
+      margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.7rem;
+    }
+    .section-title::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    /* ─── VEHICLE CARDS ─── */
+    .vehicles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.2rem; margin-bottom: 3rem;
+    }
+    .vehicle-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .vehicle-card:hover { transform: translateY(-4px); border-color: rgba(0,180,255,0.3); box-shadow: 0 8px 40px rgba(0,180,255,0.08); }
+    .vehicle-card.recommended { border-color: var(--blue); box-shadow: 0 0 30px rgba(0,180,255,0.12); }
+
+    .card-badge {
+      background: var(--blue); color: #000;
+      font-family: var(--font-head); font-size: 0.65rem; font-weight: 800;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 0.35rem 1rem; text-align: center;
+    }
+    .card-visual {
+      height: 130px; background: linear-gradient(135deg, var(--surface2), rgba(0,180,255,0.06));
+      display: flex; align-items: center; justify-content: center; position: relative;
+    }
+    .card-car-icon { font-size: 3.5rem; filter: drop-shadow(0 0 20px rgba(0,180,255,0.5)); }
+    .card-cat {
+      position: absolute; top: 0.6rem; right: 0.6rem;
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); border: 1px solid var(--border); padding: 0.2rem 0.6rem; border-radius: 4px;
+    }
+    .card-body { padding: 1.4rem; }
+    .card-name { font-family: var(--font-head); font-size: 1.05rem; font-weight: 800; margin-bottom: 0.3rem; }
+    .card-tagline { font-size: 0.78rem; color: var(--muted); margin-bottom: 1.2rem; }
+
+    .card-specs {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0.6rem; margin-bottom: 1.2rem;
+    }
+    .spec-item { background: var(--surface2); border-radius: 7px; padding: 0.7rem 0.8rem; }
+    .spec-label { font-size: 0.65rem; color: var(--muted); letter-spacing: 0.07em; text-transform: uppercase; }
+    .spec-value { font-family: var(--font-head); font-size: 0.95rem; font-weight: 700; color: var(--blue); margin-top: 0.15rem; }
+
+    .card-strengths {
+      border-top: 1px solid var(--border); padding-top: 1rem; margin-bottom: 1rem;
+    }
+    .strength-item {
+      font-size: 0.78rem; color: #7a9ab8; padding: 0.2rem 0;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .strength-item::before { content: '✓'; color: var(--green); font-weight: 700; }
+
+    .card-footer { display: flex; align-items: center; justify-content: space-between; }
+    .card-price { font-family: var(--font-head); font-size: 1.3rem; font-weight: 800; }
+    .btn-offer {
+      font-family: var(--font-head); font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      background: none; border: 1px solid var(--blue);
+      color: var(--blue); padding: 0.5rem 1.2rem; border-radius: 6px;
+      cursor: pointer; transition: background 0.2s, color 0.2s;
+    }
+    .btn-offer:hover { background: var(--blue); color: #000; }
+    .fit-reason {
+      font-size: 0.75rem; color: var(--green); background: rgba(0,229,160,0.07);
+      border: 1px solid rgba(0,229,160,0.2); border-radius: 6px;
+      padding: 0.5rem 0.8rem; margin-bottom: 1rem; line-height: 1.5;
+    }
+
+    /* ─── VEHICLE DETAIL ─── */
+    #page-detail {
+      padding: 5rem 2rem 4rem;
+      align-items: center;
+    }
+    .detail-inner { max-width: 1000px; width: 100%; margin: 0 auto; }
+    .back-btn {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.8rem; font-weight: 600; color: var(--muted);
+      background: none; border: none; cursor: pointer;
+      margin-bottom: 2rem; transition: color 0.2s;
+    }
+    .back-btn:hover { color: var(--blue); }
+
+    .detail-grid { display: grid; grid-template-columns: 1fr 340px; gap: 2rem; }
+    @media (max-width: 768px) { .detail-grid { grid-template-columns: 1fr; } }
+
+    .detail-visual {
+      height: 280px; background: linear-gradient(135deg, var(--surface), rgba(0,180,255,0.08));
+      border: 1px solid var(--border); border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 6rem; margin-bottom: 1.5rem;
+      filter: drop-shadow(0 0 30px rgba(0,180,255,0.3));
+    }
+    .detail-name { font-family: var(--font-head); font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .detail-desc { font-size: 0.9rem; color: #7a9ab8; line-height: 1.7; margin-bottom: 1.5rem; }
+
+    .specs-full {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 0.8rem; margin-bottom: 1.5rem;
+    }
+    @media (max-width: 600px) { .specs-full { grid-template-columns: 1fr 1fr; } }
+
+    .spec-full-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1rem;
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+    }
+    .spec-full-icon { font-size: 1.3rem; margin-bottom: 0.4rem; }
+    .spec-full-label { font-size: 0.65rem; color: var(--muted); letter-spacing: 0.07em; text-transform: uppercase; }
+    .spec-full-value { font-family: var(--font-head); font-size: 1rem; font-weight: 800; color: var(--blue); margin-top: 0.2rem; }
+
+    .detail-sidebar {
+      position: sticky; top: 80px; height: fit-content;
+    }
+    .pricing-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 2rem;
+    }
+    .pricing-from { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.3rem; }
+    .pricing-price { font-family: var(--font-head); font-size: 2.5rem; font-weight: 800; color: var(--blue); margin-bottom: 1.5rem; }
+    .pricing-specs { margin-bottom: 1.5rem; }
+    .ps-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.65rem 0; border-bottom: 1px solid var(--border);
+      font-size: 0.82rem;
+    }
+    .ps-row:last-child { border-bottom: none; }
+    .ps-key { color: var(--muted); }
+    .ps-val { font-weight: 600; }
+    .btn-test {
+      width: 100%; padding: 0.9rem;
+      font-family: var(--font-head); font-size: 0.82rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      background: var(--blue); color: #000; border: none;
+      border-radius: 8px; cursor: pointer; margin-bottom: 0.7rem;
+      transition: opacity 0.2s;
+    }
+    .btn-test:hover { opacity: 0.88; }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { animation: fadeUp 0.5s ease forwards; }
+    .fade-up-d1 { animation: fadeUp 0.5s 0.1s ease forwards; opacity: 0; }
+    .fade-up-d2 { animation: fadeUp 0.5s 0.2s ease forwards; opacity: 0; }
+    .fade-up-d3 { animation: fadeUp 0.5s 0.3s ease forwards; opacity: 0; }
+
+    /* ─── TOAST ─── */
+    .toast {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 200;
+      background: var(--surface2); border: 1px solid var(--green);
+      color: var(--green); border-radius: 10px; padding: 1rem 1.4rem;
+      font-size: 0.85rem; font-weight: 600;
+      animation: slideIn 0.3s ease;
+      display: flex; align-items: center; gap: 0.6rem;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ─── MOBILE TWEAKS ─── */
+    @media (max-width: 600px) {
+      nav { padding: 0 1.2rem; }
+      .hero-stats { gap: 1.5rem; }
+      .profile-hero { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00b4ff" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    Electri<span>Core</span>
+  </div>
+  <button class="nav-cta" onclick="showPage('journey')">Start Journey</button>
+</nav>
+
+<!-- ═══════════════════════ PAGE: HOME ═══════════════════════ -->
+<div id="page-home" class="page">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-tag fade-up">Interactive EV Discovery</div>
+    <h1 class="fade-up-d1">Find the EV that fits <em>your life</em></h1>
+    <p class="hero-sub fade-up-d2">Answer a few questions about your lifestyle. Our smart system builds your mobility profile and matches you with the perfect electric vehicle.</p>
+    <button class="btn-primary fade-up-d3" onclick="showPage('journey')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Start the Journey
+    </button>
+
+    <div class="hero-stats fade-up-d3">
+      <div class="stat-item">
+        <div class="stat-num">8</div>
+        <div class="stat-label">EV Models</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">8</div>
+        <div class="stat-label">Questions</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">3 min</div>
+        <div class="stat-label">To your match</div>
+      </div>
+    </div>
+
+    <div class="feature-cards">
+      <div class="feature-card fade-up-d1">
+        <div class="feature-icon">🎮</div>
+        <div class="feature-title">Guided Journey</div>
+        <div class="feature-desc">Interactive questions that feel like a game, not a form.</div>
+      </div>
+      <div class="feature-card fade-up-d2">
+        <div class="feature-icon">🤖</div>
+        <div class="feature-title">AI Assistant</div>
+        <div class="feature-desc">Real-time EV education as you answer each question.</div>
+      </div>
+      <div class="feature-card fade-up-d3">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-title">Smart Match</div>
+        <div class="feature-desc">Personalized recommendations based on your profile.</div>
+      </div>
+      <div class="feature-card fade-up-d1">
+        <div class="feature-icon">🗺️</div>
+        <div class="feature-title">Full Explorer</div>
+        <div class="feature-desc">Browse all 8 ElectriCore models with detailed specs.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ PAGE: JOURNEY ═══════════════════════ -->
+<div id="page-journey" class="page hidden">
+  <div class="journey-inner">
+    <div class="progress-track" id="progressTrack"></div>
+
+    <div class="journey-header">
+      <div class="step-label" id="stepLabel">Step 1 of 8</div>
+      <div class="question-text" id="questionText"></div>
+    </div>
+
+    <div class="options-grid" id="optionsGrid"></div>
+
+    <div id="aiPanel" class="hidden"></div>
+
+    <div class="profile-meters" id="profileMeters"></div>
+
+    <div class="journey-footer">
+      <button class="btn-ghost" onclick="resetJourney()">↺ Reset</button>
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <button class="btn-ghost" onclick="skipQuestion()">Skip →</button>
+        <button class="btn-next" id="nextBtn" onclick="nextQuestion()" disabled>Continue →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ PAGE: PROFILE ═══════════════════════ -->
+<div id="page-profile" class="page hidden">
+  <div class="profile-inner">
+    <button class="back-btn" onclick="showPage('journey')">
+      ← Back to Journey
+    </button>
+    <div id="profileHero" class="profile-hero"></div>
+    <h2 class="section-title">⭐ Top Recommendations</h2>
+    <div class="vehicles-grid" id="recommendedGrid"></div>
+    <h2 class="section-title">🚗 Full Lineup</h2>
+    <div class="vehicles-grid" id="allVehiclesGrid"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ PAGE: DETAIL ═══════════════════════ -->
+<div id="page-detail" class="page hidden">
+  <div class="detail-inner" id="detailInner"></div>
+</div>
+
+<script>
+// ─── DATA ─────────────────────────────────────────────────────────────────────
+const VEHICLES = [
+  { id:1, name:"CitySprint Pro", cat:"Compact", emoji:"🚗", range:320, battery:55, charging:"11 kW", fastCharge:"80% in 25 min", price:32000, seats:5, accel:"8.2s", topSpeed:180, strengths:["Perfect for city parking","Great daily efficiency","Low running costs"], desc:"Built for urban explorers who value agility and efficiency.", idealFor:["urban","budget","commuter"] },
+  { id:2, name:"FamilyFlow Max", cat:"SUV", emoji:"🚙", range:450, battery:75, charging:"11 kW", fastCharge:"80% in 32 min", price:48000, seats:7, accel:"6.5s", topSpeed:200, strengths:["Spacious 7-seat interior","Long weekend range","AWD available"], desc:"The perfect family companion for everyday drives and adventures.", idealFor:["family","adventure","highway"] },
+  { id:3, name:"RangeRunner Elite", cat:"Sedan", emoji:"🏎️", range:520, battery:85, charging:"11 kW", fastCharge:"80% in 28 min", price:55000, seats:5, accel:"5.8s", topSpeed:220, strengths:["Industry-leading range","Premium comfort","Efficient battery mgmt"], desc:"Maximum range meets maximum comfort for the discerning driver.", idealFor:["highway","longdist","professional"] },
+  { id:4, name:"PerformancePulse GT", cat:"Sports", emoji:"⚡", range:380, battery:70, charging:"11 kW", fastCharge:"80% in 24 min", price:62000, seats:4, accel:"3.9s", topSpeed:250, strengths:["0–100 in 3.9 seconds","Precision handling","Race-inspired interior"], desc:"Pure electric excitement in a sleek aerodynamic package.", idealFor:["performance","sport","luxury"] },
+  { id:5, name:"EcoCommute Lite", cat:"Compact", emoji:"🌿", range:280, battery:45, charging:"7.4 kW", fastCharge:"80% in 35 min", price:25000, seats:5, accel:"9.1s", topSpeed:160, strengths:["Most affordable entry","Low operating costs","Ideal for short trips"], desc:"Affordable, eco-friendly transportation for the conscious commuter.", idealFor:["budget","urban","commuter"] },
+  { id:6, name:"AdventureX Trail", cat:"Off-Road SUV", emoji:"🏔️", range:480, battery:80, charging:"11 kW", fastCharge:"80% in 30 min", price:52000, seats:5, accel:"6.2s", topSpeed:210, strengths:["True off-road capability","All-terrain tires","High ground clearance"], desc:"Built for those who want to explore beyond city limits.", idealFor:["adventure","offroad","rural"] },
+  { id:7, name:"MiniBus Connect", cat:"Van", emoji:"🚐", range:400, battery:70, charging:"11 kW", fastCharge:"80% in 32 min", price:45000, seats:8, accel:"7.1s", topSpeed:180, strengths:["Maximum 8-seat capacity","Huge cargo area","Group travel friendly"], desc:"Comfortable seating for up to 8 with generous cargo space.", idealFor:["family","group","large"] },
+  { id:8, name:"LuxeGlide Premium", cat:"Luxury Sedan", emoji:"💎", range:500, battery:82, charging:"11 kW", fastCharge:"80% in 27 min", price:58000, seats:5, accel:"5.5s", topSpeed:230, strengths:["Hand-stitched luxury interior","Advanced driver assistance","Whisper-quiet cabin"], desc:"Premium materials and cutting-edge technology in every detail.", idealFor:["luxury","comfort","professional"] }
+];
+
+const QUESTIONS = [
+  {
+    id:"commute", q:"What's your typical daily commute?",
+    opts:[
+      {id:"short", label:"Short City Hop", desc:"0–30 km daily", icon:"🏙️"},
+      {id:"medium", label:"Regular Commute", desc:"30–80 km daily", icon:"🛣️"},
+      {id:"long", label:"Long Distance", desc:"80+ km daily", icon:"🗺️"}
+    ]
+  },
+  {
+    id:"driving", q:"How do you mostly drive?",
+    opts:[
+      {id:"city", label:"City & Urban", desc:"Stop-and-go streets", icon:"🚦"},
+      {id:"highway", label:"Open Highway", desc:"Fast, long stretches", icon:"⚡"},
+      {id:"mixed", label:"Mix of Both", desc:"Balanced driving", icon:"🔄"}
+    ]
+  },
+  {
+    id:"charging", q:"Where will you primarily charge?",
+    opts:[
+      {id:"home", label:"Home Garage", desc:"Charge overnight at home", icon:"🏠"},
+      {id:"public", label:"Public Stations", desc:"Charge on the go", icon:"📍"},
+      {id:"work", label:"Workplace", desc:"Charge while working", icon:"🏢"},
+      {id:"mixed", label:"All of the above", desc:"Flexible charging", icon:"🔀"}
+    ]
+  },
+  {
+    id:"weekend", q:"Typical weekend trip distance?",
+    opts:[
+      {id:"nearby", label:"Stay Nearby", desc:"0–50 km", icon:"☕"},
+      {id:"regional", label:"Regional Trips", desc:"50–200 km", icon:"🌄"},
+      {id:"long", label:"Long Adventures", desc:"200+ km", icon:"🏕️"}
+    ]
+  },
+  {
+    id:"climate", q:"What's your local climate?",
+    opts:[
+      {id:"cold", label:"Cold Winters", desc:"Snow and frost", icon:"❄️"},
+      {id:"hot", label:"Hot Summers", desc:"High temperatures", icon:"☀️"},
+      {id:"temperate", label:"Moderate", desc:"Mild year-round", icon:"🌤️"}
+    ]
+  },
+  {
+    id:"family", q:"Family size and seating needs?",
+    opts:[
+      {id:"solo", label:"Solo / Couple", desc:"1–2 people", icon:"👤"},
+      {id:"small", label:"Small Family", desc:"3–5 people", icon:"👨‍👩‍👧"},
+      {id:"large", label:"Large Family", desc:"6+ people", icon:"👨‍👩‍👧‍👦"}
+    ]
+  },
+  {
+    id:"budget", q:"How flexible is your budget?",
+    opts:[
+      {id:"low", label:"Best Value", desc:"Under €30K", icon:"💡"},
+      {id:"medium", label:"Mid Range", desc:"€30K–€50K", icon:"💼"},
+      {id:"high", label:"Flexible", desc:"€50K+", icon:"💎"}
+    ]
+  },
+  {
+    id:"priority", q:"What matters most to you?",
+    opts:[
+      {id:"efficiency", label:"Efficiency", desc:"Low running costs", icon:"🌿"},
+      {id:"performance", label:"Performance", desc:"Speed & power", icon:"🏁"},
+      {id:"comfort", label:"Comfort", desc:"Luxury & tech", icon:"☁️"},
+      {id:"practicality", label:"Practicality", desc:"Space & flexibility", icon:"🔧"}
+    ]
+  }
+];
+
+const AI_TIPS = {
+  "commute_short": "⚡ With a short commute, you won't need a huge battery. You could charge just a couple times a week, reducing costs significantly.",
+  "commute_medium": "🔋 A 30–80 km daily range means you'll want at least 350 km of rated range for comfort — real-world range can be 15–20% less than rated.",
+  "commute_long": "🗺️ For 80+ km daily, prioritize vehicles with 450+ km range and look for DC fast charging support — it makes top-ups on long days a breeze.",
+  "driving_city": "🏙️ City driving is where EVs shine! Regenerative braking recovers energy on every stop, giving you more efficient range than rated.",
+  "driving_highway": "🛣️ Highway speeds consume more battery. An EV rated at 500 km city might give you 380 km at 120 km/h — keep that in mind!",
+  "driving_mixed": "🔄 Mixed driving is the most common use case — most of our models are optimized for exactly this balance.",
+  "charging_home": "🏠 Home charging overnight with an 11 kW wallbox means you wake up to a full battery every day. It's the most cost-effective option!",
+  "charging_public": "📍 Public charging networks are expanding fast. Look for vehicles with DC fast-charging support — 80% in 25–35 minutes means quick top-ups.",
+  "charging_work": "🏢 Workplace charging is a hidden gem. Even a slow 7.4 kW charger over an 8-hour workday adds ~60 km of range — completely free in many offices.",
+  "charging_mixed": "🔀 With flexible charging access, any vehicle in our lineup will work perfectly for you.",
+  "weekend_nearby": "☕ Short weekend trips mean almost any EV works for you. You can focus on daily efficiency and price instead.",
+  "weekend_regional": "🌄 For 50–200 km trips, look for a vehicle with 400+ km range so you arrive relaxed without charging anxiety.",
+  "weekend_long": "🏕️ Frequent long drives? You'll want 480+ km range and DC fast charging. Look for our RangeRunner Elite or LuxeGlide Premium.",
+  "climate_cold": "❄️ Cold weather reduces battery range by 15–30%. Our heating systems preheat the battery — enable it before unplugging to preserve range.",
+  "climate_hot": "☀️ Heat affects performance less than cold, but our thermal management systems maintain optimal battery temperature year-round.",
+  "climate_temperate": "🌤️ Temperate climates are ideal for EVs — you'll experience the rated range consistently throughout the year.",
+  "family_solo": "👤 Solo or couple? You have the most flexibility. Compact models offer agility and savings, while sedans give comfort.",
+  "family_small": "👨‍👩‍👧 5-seat family? Our SUVs and sedans give you the perfect mix of space, range, and everyday practicality.",
+  "family_large": "👨‍👩‍👧‍👦 6+ people means you need our MiniBus Connect (8 seats) or FamilyFlow Max (7 seats). Both have excellent range for family adventures.",
+  "budget_low": "💡 Great news — our EcoCommute Lite starts at $25,000 and delivers real value with low running costs (roughly $2–3 per 100 km).",
+  "budget_medium": "💼 The $30K–$50K range is our sweet spot with the best variety. You get real features without over-spending.",
+  "budget_high": "💎 With flexible budget, you can prioritize features: luxury materials, advanced driver assistance, the longest range, or the fastest acceleration.",
+  "priority_efficiency": "🌿 Efficiency-focused? Look at battery size vs range ratio. Our EcoCommute Lite and CitySprint Pro have excellent consumption per kWh.",
+  "priority_performance": "🏁 Our PerformancePulse GT hits 100 km/h in just 3.9 seconds. Electric motors deliver instant torque — the acceleration is unlike anything in a combustion car.",
+  "priority_comfort": "☁️ Comfort-focused EVs are exceptionally quiet — no engine noise, just smooth acceleration. Our LuxeGlide Premium is the pinnacle.",
+  "priority_practicality": "🔧 Practical EVs mean space, range, and versatile charging. The FamilyFlow Max and AdventureX Trail both check every box."
+};
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let currentQ = 0;
+let answers = {};
+let profile = { range:20, comfort:20, performance:20, affordability:20 };
+
+// ─── NAVIGATION ──────────────────────────────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+  document.getElementById('page-' + id).classList.remove('hidden');
+  window.scrollTo(0,0);
+  if (id === 'journey') renderQuestion();
+  if (id === 'profile') renderProfile();
+}
+
+// ─── JOURNEY ─────────────────────────────────────────────────────────────────
+function renderQuestion() {
+  const q = QUESTIONS[currentQ];
+  document.getElementById('stepLabel').textContent = `Step ${currentQ+1} of ${QUESTIONS.length}`;
+  document.getElementById('questionText').textContent = q.q;
+  document.getElementById('nextBtn').disabled = !answers[q.id];
+
+  // Progress track
+  const track = document.getElementById('progressTrack');
+  track.innerHTML = QUESTIONS.map((_, i) => {
+    let cls = 'prog-step';
+    if (i < currentQ) cls += ' done';
+    if (i === currentQ) cls += ' active';
+    return `<div class="${cls}"></div>`;
+  }).join('');
+
+  // Options
+  const grid = document.getElementById('optionsGrid');
+  grid.innerHTML = q.opts.map(o => `
+    <button class="option-btn ${answers[q.id]===o.id?'selected':''}" onclick="selectOption('${o.id}')">
+      <div class="option-icon">${o.icon}</div>
+      <div class="option-label">${o.label}</div>
+      <div class="option-desc">${o.desc}</div>
+    </button>
+  `).join('');
+
+  // AI panel
+  const aiPanel = document.getElementById('aiPanel');
+  const key = q.id + '_' + answers[q.id];
+  if (answers[q.id] && AI_TIPS[key]) {
+    aiPanel.classList.remove('hidden');
+    aiPanel.innerHTML = `
+      <div class="ai-panel">
+        <div class="ai-avatar">🤖</div>
+        <div>
+          <div class="ai-name">EV Assistant</div>
+          <div class="ai-message">${AI_TIPS[key]}</div>
+        </div>
+      </div>`;
+  } else {
+    aiPanel.classList.add('hidden');
+  }
+
+  renderMeters();
+}
+
+function selectOption(optId) {
+  const q = QUESTIONS[currentQ];
+  answers[q.id] = optId;
+  updateProfile(q.id, optId);
+  renderQuestion();
+}
+
+function updateProfile(qId, optId) {
+  const rules = {
+    "commute_long":    { range:+20 },
+    "commute_medium":  { range:+10 },
+    "driving_highway": { range:+15, comfort:+5 },
+    "driving_city":    { affordability:+10 },
+    "weekend_long":    { range:+20, comfort:+5 },
+    "budget_low":      { affordability:+25 },
+    "budget_high":     { performance:+10, comfort:+15 },
+    "priority_performance": { performance:+30 },
+    "priority_comfort":     { comfort:+30 },
+    "priority_efficiency":  { affordability:+20 },
+    "family_large":    { comfort:+10 },
+    "climate_cold":    { range:+10 }
+  };
+  const key = qId + '_' + optId;
+  if (rules[key]) {
+    for (const [k,v] of Object.entries(rules[key])) {
+      profile[k] = Math.min(100, (profile[k]||20) + v);
+    }
+  }
+}
+
+function renderMeters() {
+  const answered = Object.keys(answers).length;
+  if (answered < 2) {
+    document.getElementById('profileMeters').innerHTML = '';
+    return;
+  }
+  document.getElementById('profileMeters').innerHTML = `
+    <div class="meter-item">
+      <div class="meter-label">Range Priority</div>
+      <div class="meter-bar"><div class="meter-fill range" style="width:${Math.min(100,profile.range)}%"></div></div>
+      <div class="meter-value" style="color:var(--blue)">${Math.round(profile.range)}%</div>
+    </div>
+    <div class="meter-item">
+      <div class="meter-label">Comfort</div>
+      <div class="meter-bar"><div class="meter-fill comfort" style="width:${Math.min(100,profile.comfort)}%"></div></div>
+      <div class="meter-value" style="color:var(--green)">${Math.round(profile.comfort)}%</div>
+    </div>
+    <div class="meter-item">
+      <div class="meter-label">Performance</div>
+      <div class="meter-bar"><div class="meter-fill performance" style="width:${Math.min(100,profile.performance)}%"></div></div>
+      <div class="meter-value" style="color:#ff6b35">${Math.round(profile.performance)}%</div>
+    </div>
+    <div class="meter-item">
+      <div class="meter-label">Value</div>
+      <div class="meter-bar"><div class="meter-fill affordability" style="width:${Math.min(100,profile.affordability)}%"></div></div>
+      <div class="meter-value" style="color:var(--gold)">${Math.round(profile.affordability)}%</div>
+    </div>
+  `;
+}
+
+function nextQuestion() {
+  if (currentQ < QUESTIONS.length - 1) {
+    currentQ++;
+    renderQuestion();
+  } else {
+    showPage('profile');
+  }
+}
+
+function skipQuestion() {
+  if (currentQ < QUESTIONS.length - 1) {
+    currentQ++;
+    renderQuestion();
+  } else {
+    showPage('profile');
+  }
+}
+
+function resetJourney() {
+  currentQ = 0;
+  answers = {};
+  profile = { range:20, comfort:20, performance:20, affordability:20 };
+  renderQuestion();
+}
+
+// ─── RECOMMENDATIONS ─────────────────────────────────────────────────────────
+function scoreVehicle(v) {
+  let score = 0;
+  const a = answers;
+
+  // Commute
+  if (a.commute === 'long' && v.range >= 450) score += 3;
+  if (a.commute === 'medium' && v.range >= 350) score += 2;
+  if (a.commute === 'short' && v.range <= 350) score += 2;
+
+  // Driving
+  if (a.driving === 'city' && v.cat === 'Compact') score += 2;
+  if (a.driving === 'highway' && v.range >= 450) score += 2;
+
+  // Family
+  if (a.family === 'large' && v.seats >= 7) score += 4;
+  if (a.family === 'small' && v.seats >= 5 && v.seats < 8) score += 2;
+  if (a.family === 'solo' && v.seats <= 5) score += 1;
+
+  // Budget
+  if (a.budget === 'low' && v.price <= 35000) score += 3;
+  if (a.budget === 'medium' && v.price > 30000 && v.price <= 50000) score += 2;
+  if (a.budget === 'high' && v.price >= 50000) score += 2;
+
+  // Priority
+  if (a.priority === 'performance' && parseFloat(v.accel) < 5) score += 3;
+  if (a.priority === 'comfort' && (v.cat === 'Luxury Sedan' || v.cat === 'SUV')) score += 3;
+  if (a.priority === 'efficiency' && v.battery <= 60) score += 2;
+  if (a.priority === 'practicality' && v.seats >= 5) score += 1;
+
+  // Weekend
+  if (a.weekend === 'long' && v.range >= 450) score += 2;
+
+  return score;
+}
+
+function getFitReason(v) {
+  const a = answers;
+  const reasons = [];
+  if (a.commute === 'short' && v.range <= 350) reasons.push("ideal range for your short commute");
+  if (a.commute === 'long' && v.range >= 450) reasons.push(`${v.range} km range handles your long daily drives`);
+  if (a.family === 'large' && v.seats >= 7) reasons.push(`${v.seats} seats fit your large family`);
+  if (a.budget === 'low' && v.price <= 35000) reasons.push("fits your budget perfectly");
+  if (a.priority === 'performance' && parseFloat(v.accel) < 5) reasons.push(`blazing ${v.accel} 0–100 km/h`);
+  if (a.priority === 'comfort' && v.cat.includes('Luxury')) reasons.push("premium comfort and finishes");
+  if (a.weekend === 'long' && v.range >= 450) reasons.push("range for your weekend adventures");
+  if (reasons.length === 0) reasons.push("well-balanced for your lifestyle");
+  return `✦ Matches because: ${reasons.slice(0,2).join(' · ')}`;
+}
+
+// ─── PROFILE PAGE ─────────────────────────────────────────────────────────────
+function buildProfileName() {
+  const a = answers;
+  let parts = [];
+  if (a.driving === 'city') parts.push("Urban");
+  else if (a.driving === 'highway') parts.push("Highway");
+  else parts.push("Balanced");
+  if (a.commute === 'long') parts.push("Long-Distance");
+  if (a.family === 'large') parts.push("Family");
+  if (a.priority === 'performance') parts.push("Performance");
+  if (a.priority === 'comfort') parts.push("Comfort");
+  parts.push("Explorer");
+  return parts.join(' ');
+}
+
+function buildTraits() {
+  const a = answers;
+  const traits = [];
+  if (a.commute) traits.push({ short:"Short commute", medium:"Medium commute", long:"Long commuter" }[a.commute]);
+  if (a.driving) traits.push({ city:"City driver", highway:"Highway driver", mixed:"Mixed driver" }[a.driving]);
+  if (a.family) traits.push({ solo:"Solo / couple", small:"Small family", large:"Large family" }[a.family]);
+  if (a.budget) traits.push({ low:"Budget conscious", medium:"Mid budget", high:"Premium buyer" }[a.budget]);
+  if (a.priority) traits.push({ efficiency:"Eco-minded", performance:"Performance seeker", comfort:"Comfort lover", practicality:"Practical thinker" }[a.priority]);
+  return traits.filter(Boolean);
+}
+
+function renderProfile() {
+  const scored = VEHICLES.map(v => ({ ...v, score: scoreVehicle(v) }))
+    .sort((a,b) => b.score - a.score);
+  const recommended = scored.slice(0,3);
+  const rest = scored.slice(3);
+  const pName = buildProfileName();
+  const traits = buildTraits();
+
+  document.getElementById('profileHero').innerHTML = `
+    <div class="profile-badge">🎯</div>
+    <div>
+      <div class="profile-title">Your Mobility Profile</div>
+      <div class="profile-name">${pName}</div>
+      <div class="profile-desc">Based on your answers, we identified the ElectriCore models that best fit your real usage patterns and lifestyle priorities.</div>
+      <div class="profile-traits">${traits.map(t=>`<span class="trait-tag">${t}</span>`).join('')}</div>
+    </div>
+  `;
+
+  document.getElementById('recommendedGrid').innerHTML = recommended.map(v => vehicleCardHTML(v, true)).join('');
+  document.getElementById('allVehiclesGrid').innerHTML = rest.map(v => vehicleCardHTML(v, false)).join('');
+}
+
+function vehicleCardHTML(v, isRec) {
+  return `
+    <div class="vehicle-card ${isRec?'recommended':''}">
+      ${isRec ? '<div class="card-badge">⭐ Recommended for you</div>' : ''}
+      <div class="card-visual">
+        <div class="card-car-icon">${v.emoji}</div>
+        <div class="card-cat">${v.cat}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${v.name}</div>
+        <div class="card-tagline">${v.desc}</div>
+        ${isRec ? `<div class="fit-reason">${getFitReason(v)}</div>` : ''}
+        <div class="card-specs">
+          <div class="spec-item"><div class="spec-label">Range</div><div class="spec-value">${v.range} km</div></div>
+          <div class="spec-item"><div class="spec-label">Battery</div><div class="spec-value">${v.battery} kWh</div></div>
+          <div class="spec-item"><div class="spec-label">0–100</div><div class="spec-value">${v.accel}</div></div>
+          <div class="spec-item"><div class="spec-label">Seats</div><div class="spec-value">${v.seats}</div></div>
+        </div>
+        <div class="card-strengths">
+          ${v.strengths.map(s=>`<div class="strength-item">${s}</div>`).join('')}
+        </div>
+        <div class="card-footer">
+          <div class="card-price">$${v.price.toLocaleString()}</div>
+          <button class="btn-offer" onclick="showDetail(${v.id})">View Offer →</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ─── DETAIL PAGE ──────────────────────────────────────────────────────────────
+function showDetail(vehicleId) {
+  const v = VEHICLES.find(x => x.id === vehicleId);
+  if (!v) return;
+  document.getElementById('detailInner').innerHTML = `
+    <button class="back-btn" onclick="history.back(); showPage('profile')">← Back to Recommendations</button>
+    <div class="detail-grid">
+      <div>
+        <div class="detail-visual">${v.emoji}</div>
+        <div class="detail-name">${v.name}</div>
+        <div class="detail-desc">${v.desc}</div>
+        <div class="specs-full">
+          <div class="spec-full-item"><div class="spec-full-icon">🔋</div><div class="spec-full-label">Battery</div><div class="spec-full-value">${v.battery} kWh</div></div>
+          <div class="spec-full-item"><div class="spec-full-icon">🗺️</div><div class="spec-full-label">Range</div><div class="spec-full-value">${v.range} km</div></div>
+          <div class="spec-full-item"><div class="spec-full-icon">⚡</div><div class="spec-full-label">0–100 km/h</div><div class="spec-full-value">${v.accel}</div></div>
+          <div class="spec-full-item"><div class="spec-full-icon">🏁</div><div class="spec-full-label">Top Speed</div><div class="spec-full-value">${v.topSpeed} km/h</div></div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;">
+          <div style="font-family:var(--font-head);font-weight:700;margin-bottom:1rem;">Key Strengths</div>
+          ${v.strengths.map(s=>`<div class="strength-item" style="padding:0.4rem 0;">${s}</div>`).join('')}
+        </div>
+      </div>
+      <div class="detail-sidebar">
+        <div class="pricing-card">
+          <div class="pricing-from">Starting from</div>
+          <div class="pricing-price">$${v.price.toLocaleString()}</div>
+          <div class="pricing-specs">
+            <div class="ps-row"><span class="ps-key">Seating</span><span class="ps-val">${v.seats} passengers</span></div>
+            <div class="ps-row"><span class="ps-key">AC Charging</span><span class="ps-val">${v.charging}</span></div>
+            <div class="ps-row"><span class="ps-key">DC Fast Charge</span><span class="ps-val">${v.fastCharge}</span></div>
+            <div class="ps-row"><span class="ps-key">Top Speed</span><span class="ps-val">${v.topSpeed} km/h</span></div>
+            <div class="ps-row"><span class="ps-key">Category</span><span class="ps-val">${v.cat}</span></div>
+          </div>
+          <button class="btn-test" onclick="showToast('Test drive request sent! Our team will contact you within 24h ✓')">Schedule Test Drive</button>
+          <button class="btn-ghost" style="width:100%;text-align:center;" onclick="showToast('Vehicle saved to your favourites ✓')">♡ Save to Favourites</button>
+          <p style="text-align:center;font-size:0.72rem;color:var(--muted);margin-top:1rem;">📞 Financing options available. Talk to our sales team.</p>
+        </div>
+      </div>
+    </div>
+  `;
+  showPage('detail');
+}
+
+// ─── TOAST ────────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = `✓ ${msg}`;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+renderQuestion();
+</script>
+</body>
+</html>
